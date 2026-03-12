@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const videos = await searchVideos(category, maxResults);
+    const { videos } = await searchVideos(category, maxResults);
     return NextResponse.json(videos);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

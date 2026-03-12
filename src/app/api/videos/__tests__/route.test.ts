@@ -14,16 +14,19 @@ describe("GET /api/videos", () => {
   });
 
   it("returns videos for a given category", async () => {
-    mockSearchVideos.mockResolvedValueOnce([
-      {
-        id: "abc123",
-        title: "Test",
-        thumbnail: "https://example.com/thumb.jpg",
-        channelName: "Channel",
-        publishedAt: "2026-03-10T12:00:00Z",
-        description: "Desc",
-      },
-    ]);
+    mockSearchVideos.mockResolvedValueOnce({
+      videos: [
+        {
+          id: "abc123",
+          title: "Test",
+          thumbnail: "https://example.com/thumb.jpg",
+          channelName: "Channel",
+          publishedAt: "2026-03-10T12:00:00Z",
+          description: "Desc",
+        },
+      ],
+      nextPageToken: undefined,
+    });
 
     const request = new Request("http://localhost/api/videos?category=AI");
     const response = await GET(request);
@@ -36,7 +39,7 @@ describe("GET /api/videos", () => {
   });
 
   it("uses custom maxResults when provided", async () => {
-    mockSearchVideos.mockResolvedValueOnce([]);
+    mockSearchVideos.mockResolvedValueOnce({ videos: [], nextPageToken: undefined });
 
     const request = new Request(
       "http://localhost/api/videos?category=AI&maxResults=5"

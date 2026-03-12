@@ -56,8 +56,9 @@ function mapVideoItem(item: YouTubeVideoItem): Video {
 
 export async function searchVideos(
   query: string,
-  maxResults: number = 10
-): Promise<Video[]> {
+  maxResults: number = 10,
+  pageToken?: string
+): Promise<{ videos: Video[]; nextPageToken?: string }> {
   const key = getApiKey();
   const params = new URLSearchParams({
     q: query,
@@ -68,6 +69,10 @@ export async function searchVideos(
     key,
   });
 
+  if (pageToken) {
+    params.set("pageToken", pageToken);
+  }
+
   const res = await fetch(`${YOUTUBE_API_BASE}/search?${params}`);
   if (!res.ok) {
     const body = await res.json();
@@ -75,7 +80,10 @@ export async function searchVideos(
   }
 
   const data = await res.json();
-  return (data.items || []).map(mapSearchItem);
+  return {
+    videos: (data.items || []).map(mapSearchItem),
+    nextPageToken: data.nextPageToken,
+  };
 }
 
 export async function getVideoById(id: string): Promise<Video> {

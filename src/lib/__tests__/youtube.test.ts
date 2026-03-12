@@ -44,16 +44,19 @@ describe("searchVideos", () => {
     expect(url.searchParams.get("maxResults")).toBe("10");
     expect(url.searchParams.get("key")).toBe("test-api-key");
 
-    expect(videos).toEqual([
-      {
-        id: "abc123",
-        title: "Test Video",
-        thumbnail: "https://img.youtube.com/vi/abc123/mqdefault.jpg",
-        channelName: "Test Channel",
-        publishedAt: "2026-03-10T12:00:00Z",
-        description: "A test video description",
-      },
-    ]);
+    expect(videos).toEqual({
+      videos: [
+        {
+          id: "abc123",
+          title: "Test Video",
+          thumbnail: "https://img.youtube.com/vi/abc123/mqdefault.jpg",
+          channelName: "Test Channel",
+          publishedAt: "2026-03-10T12:00:00Z",
+          description: "A test video description",
+        },
+      ],
+      nextPageToken: undefined,
+    });
   });
 
   it("throws when API key is missing", async () => {

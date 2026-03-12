@@ -34,7 +34,7 @@ function FeedContent() {
       if (tab === "All") {
         const results = await Promise.all(
           interests.map((cat) =>
-            fetch(`/api/videos?category=${encodeURIComponent(cat)}`).then(
+            fetch(`/api/videos/filtered?category=${encodeURIComponent(cat)}`, { cache: 'no-store' }).then(
               (res) => {
                 if (!res.ok) throw res;
                 return res.json();
@@ -59,7 +59,8 @@ function FeedContent() {
         setVideos(deduped);
       } else {
         const res = await fetch(
-          `/api/videos?category=${encodeURIComponent(tab)}`
+          `/api/videos/filtered?category=${encodeURIComponent(tab)}&count=20`,
+          { cache: 'no-store' }
         );
         if (!res.ok) {
           const data = await res.json();
