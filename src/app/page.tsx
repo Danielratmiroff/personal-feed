@@ -1,65 +1,117 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Suspense, useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { Video } from "@/types/video";
+import { interests } from "@/config/interests";
+import CategoryTabs from "@/components/CategoryTabs";
+import VideoGrid from "@/components/VideoGrid";
+import SkeletonGrid from "@/components/SkeletonGrid";
+import ErrorMessage from "@/components/ErrorMessage";
+
+// Suspense boundary required because useSearchParams() triggers client-side bailout in Next.js App Router
+export default function FeedPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Suspense fallback={<main className="max-w-7xl mx-auto px-4 py-8"><SkeletonGrid /></main>}>
+      <FeedContent />
+    </Suspense>
+  );
+}
+
+function FeedContent() {
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") || "All";
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchVideos = useCallback(async (tab: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (tab === "All") {
+        const results = await Promise.all(
+          interests.map((cat) =>
+            fetch(`/api/videos?category=${encodeURIComponent(cat)}`).then(
+              (res) => {
+                if (!res.ok) throw res;
+                return res.json();
+              }
+            )
+          )
+        );
+        const merged = results
+          .flat()
+          .sort(
+            (a: Video, b: Video) =>
+              new Date(b.publishedAt).getTime() -
+              new Date(a.publishedAt).getTime()
+          );
+        // Deduplicate by video ID
+        const seen = new Set<string>();
+        const deduped = merged.filter((v: Video) => {
+          if (seen.has(v.id)) return false;
+          seen.add(v.id);
+          return true;
+        });
+        setVideos(deduped);
+      } else {
+        const res = await fetch(
+          `/api/videos?category=${encodeURIComponent(tab)}`
+        );
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to fetch videos");
+        }
+        setVideos(await res.json());
+      }
+    } catch (err) {
+      if (err instanceof Response) {
+        const data = await err.json();
+        setError(data.error || "Failed to fetch videos");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to fetch videos");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchVideos(activeTab);
+  }, [activeTab, fetchVideos]);
+
+  const handleTabSelect = (tab: string) => {
+    setActiveTab(tab);
+    // Update URL query param so detail page can link back with tab preserved
+    const url = new URL(window.location.href);
+    if (tab === "All") {
+      url.searchParams.delete("tab");
+    } else {
+      url.searchParams.set("tab", tab);
+    }
+    window.history.replaceState({}, "", url.toString());
+  };
+
+  return (
+    <main className="max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Video Feed</h1>
+      <CategoryTabs
+        categories={interests}
+        activeTab={activeTab}
+        onSelect={handleTabSelect}
+      />
+      {loading && <SkeletonGrid />}
+      {error && (
+        <ErrorMessage message={error} onRetry={() => fetchVideos(activeTab)} />
+      )}
+      {!loading && !error && (
+        <VideoGrid videos={videos} category={activeTab} />
+      )}
+    </main>
   );
 }
