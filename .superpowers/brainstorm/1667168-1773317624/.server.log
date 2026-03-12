@@ -4,3 +4,4 @@
 {"type":"screen-added","file":"/home/ubuntu/code/ralph-test/.superpowers/brainstorm/1667168-1773317624/modal-options.html"}
 {"source":"user-event","type":"click","text":"← Back to feed\n        \n      \n    \n    \n      C: Full-Page Detail\n      Replaces the grid entirely. Large video player on the left, metadata on the right. \"Back to feed\" link to return. Most immersive viewing experience.","choice":"c","id":null,"timestamp":1773317763880}
 {"type":"screen-added","file":"/home/ubuntu/code/ralph-test/.superpowers/brainstorm/1667168-1773317624/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}
