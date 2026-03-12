@@ -1206,7 +1206,7 @@ Replace the contents of `src/app/page.tsx`:
 ```tsx
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Video } from "@/types/video";
 import { interests } from "@/config/interests";
@@ -1215,7 +1215,16 @@ import VideoGrid from "@/components/VideoGrid";
 import SkeletonGrid from "@/components/SkeletonGrid";
 import ErrorMessage from "@/components/ErrorMessage";
 
+// Suspense boundary required because useSearchParams() triggers client-side bailout in Next.js App Router
 export default function FeedPage() {
+  return (
+    <Suspense fallback={<main className="max-w-7xl mx-auto px-4 py-8"><SkeletonGrid /></main>}>
+      <FeedContent />
+    </Suspense>
+  );
+}
+
+function FeedContent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get("tab") || "All";
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -1343,14 +1352,31 @@ Create `src/app/video/[id]/page.tsx`:
 ```tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Video } from "@/types/video";
 import VideoDetail from "@/components/VideoDetail";
 import ErrorMessage from "@/components/ErrorMessage";
 
+// Suspense boundary required because useSearchParams() triggers client-side bailout in Next.js App Router
 export default function VideoDetailPage() {
+  return (
+    <Suspense fallback={
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="animate-pulse">
+          <div className="aspect-video bg-gray-200 rounded-lg mb-4" />
+          <div className="bg-gray-200 h-6 rounded w-1/2 mb-2" />
+          <div className="bg-gray-200 h-4 rounded w-1/4" />
+        </div>
+      </main>
+    }>
+      <VideoDetailContent />
+    </Suspense>
+  );
+}
+
+function VideoDetailContent() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
