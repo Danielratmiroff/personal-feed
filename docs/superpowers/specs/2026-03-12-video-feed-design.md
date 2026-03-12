@@ -19,6 +19,8 @@ src/
     api/
       videos/
         route.ts            — GET /api/videos?category=AI
+        [id]/
+          route.ts          — GET /api/videos/:id — single video details
   components/
     VideoGrid.tsx           — Responsive grid of video tiles
     VideoCard.tsx           — Single tile (thumbnail, title, channel)
@@ -46,9 +48,21 @@ src/
 3. Maps response to a `Video` type
 4. Returns JSON array of videos
 
-**No caching for v1.** YouTube's free tier allows 10,000 units/day. `search.list` costs 100 units per call. With 2 categories, that's ~50 full page loads/day — sufficient for personal use.
+**No caching for v1.** YouTube's free tier allows 10,000 units/day. `search.list` costs 100 units per call. The "All" tab fetches both categories (200 units). A single-category tab costs 100 units. The detail page's `videos.list` costs 1 unit. Worst case (always "All" tab): ~50 page loads/day — sufficient for personal use.
 
 **Error responses:** Returns `{ error: string }` with appropriate HTTP status codes.
+
+### `GET /api/videos/[id]`
+
+Fetches a single video's full details. Used by the detail page when navigated to directly (bookmark/shared link).
+
+**Behavior:**
+1. Reads `YOUTUBE_API_KEY` from `process.env`
+2. Calls YouTube Data API `videos.list` with `id=<videoId>`, `part=snippet`
+3. Maps response to a `Video` type (with full, untruncated description)
+4. Returns JSON
+
+**Quota cost:** 1 unit per call (vs. 100 for `search.list`), so this is negligible.
 
 ### Video Type
 
@@ -69,8 +83,8 @@ interface Video {
 
 - Header with app name
 - **Category tab bar:** "All" | "AI" | "AI Engineering"
-  - "All" selected by default, shows videos from all categories interleaved
-  - Selecting a specific tab filters to that category
+  - "All" selected by default — fetches all categories in parallel, merges results sorted by `publishedAt` (newest first), deduplicates by video ID
+  - Selecting a specific tab fetches only that category
 - **Responsive video grid:**
   - Desktop (1024px+): 4 columns
   - Tablet (768px): 2 columns
@@ -90,7 +104,7 @@ URL-based routing so videos are shareable/bookmarkable.
 
 - **Left side:** Large embedded YouTube player (iframe)
 - **Right side:** Title, channel name, published date, full description
-- **Top:** "Back to feed" link (preserves tab state)
+- **Top:** "Back to feed" link (preserves tab state via `?tab=` query param in the URL)
 
 ### Loading & Empty States
 
@@ -103,7 +117,7 @@ URL-based routing so videos are shareable/bookmarkable.
 2. API route calls YouTube Data API, maps and returns results
 3. Frontend renders grid of `VideoCard` tiles
 4. User clicks a tile → navigates to `/video/[id]`
-5. Detail page fetches video metadata (or receives it via client-side state) and renders the embedded player + info
+5. Detail page calls `GET /api/videos/[id]` to fetch full video metadata (including untruncated description) and renders the embedded player + info
 
 ## Styling
 
