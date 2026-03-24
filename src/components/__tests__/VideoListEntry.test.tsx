@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import VideoCard from "../VideoCard";
+import VideoListEntry from "../VideoListEntry";
 
 const mockVideo = {
   id: "abc123",
@@ -11,9 +11,9 @@ const mockVideo = {
   description: "A video about AI",
 };
 
-describe("VideoCard", () => {
+describe("VideoListEntry", () => {
   it("renders video title, channel name, and thumbnail", () => {
-    render(<VideoCard video={mockVideo} />);
+    render(<VideoListEntry video={mockVideo} />);
 
     expect(screen.getByText("Understanding AI in 2026")).toBeDefined();
     expect(screen.getByText("Tech Channel")).toBeDefined();
@@ -21,14 +21,14 @@ describe("VideoCard", () => {
   });
 
   it("links to the detail page", () => {
-    render(<VideoCard video={mockVideo} />);
+    render(<VideoListEntry video={mockVideo} />);
 
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/video/abc123");
   });
 
   it("includes tab param in link when activeTab is set", () => {
-    render(<VideoCard video={mockVideo} activeTab="AI" />);
+    render(<VideoListEntry video={mockVideo} activeTab="AI" />);
 
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/video/abc123?tab=AI");

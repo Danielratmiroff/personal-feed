@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import VideoGrid from "../VideoGrid";
+import VideoList from "../VideoList";
 
 const mockVideos = [
   {
@@ -21,16 +21,16 @@ const mockVideos = [
   },
 ];
 
-describe("VideoGrid", () => {
-  it("renders a card for each video", () => {
-    render(<VideoGrid videos={mockVideos} />);
+describe("VideoList", () => {
+  it("renders an entry for each video", () => {
+    render(<VideoList videos={mockVideos} />);
 
     expect(screen.getByText("Video One")).toBeDefined();
     expect(screen.getByText("Video Two")).toBeDefined();
   });
 
   it("renders empty message when no videos", () => {
-    render(<VideoGrid videos={[]} category="AI" />);
+    render(<VideoList videos={[]} category="AI" />);
 
     expect(screen.getByText('No videos found for "AI"')).toBeDefined();
   });

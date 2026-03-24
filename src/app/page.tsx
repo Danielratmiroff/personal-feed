@@ -5,14 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { Video } from "@/types/video";
 import { interests } from "@/config/interests";
 import CategoryTabs from "@/components/CategoryTabs";
-import VideoGrid from "@/components/VideoGrid";
-import SkeletonGrid from "@/components/SkeletonGrid";
+import VideoList from "@/components/VideoList";
+import SkeletonList from "@/components/SkeletonList";
 import ErrorMessage from "@/components/ErrorMessage";
 
 // Suspense boundary required because useSearchParams() triggers client-side bailout in Next.js App Router
 export default function FeedPage() {
   return (
-    <Suspense fallback={<main className="max-w-7xl mx-auto px-4 py-8"><SkeletonGrid /></main>}>
+    <Suspense fallback={<main className="max-w-5xl mx-auto px-6 py-12"><SkeletonList /></main>}>
       <FeedContent />
     </Suspense>
   );
@@ -99,19 +99,19 @@ function FeedContent() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Video Feed</h1>
+    <main className="max-w-5xl mx-auto px-6 py-12">
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-10">Feed</h1>
       <CategoryTabs
         categories={interests}
         activeTab={activeTab}
         onSelect={handleTabSelect}
       />
-      {loading && <SkeletonGrid />}
+      {loading && <SkeletonList />}
       {error && (
         <ErrorMessage message={error} onRetry={() => fetchVideos(activeTab)} />
       )}
       {!loading && !error && (
-        <VideoGrid videos={videos} category={activeTab} />
+        <VideoList videos={videos} category={activeTab} />
       )}
     </main>
   );
