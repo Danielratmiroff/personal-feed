@@ -1,4 +1,5 @@
 import { Video } from "@/types/video";
+import { VideoItem } from "@/types/feed";
 
 const YOUTUBE_API_BASE = "https://www.googleapis.com/youtube/v3";
 
@@ -110,6 +111,18 @@ export async function getChannelVideos(
   return {
     videos: (data.items || []).map(mapSearchItem),
     nextPageToken: data.nextPageToken,
+  };
+}
+
+export function videoToFeedItem(video: Video): VideoItem {
+  return {
+    type: "video",
+    id: video.id,
+    title: video.title,
+    thumbnail: video.thumbnail,
+    sourceName: video.channelName,
+    publishedAt: video.publishedAt,
+    description: video.description,
   };
 }
 
