@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { getChannelVideos } from "@/lib/youtube";
+import { randomCount } from "@/lib/random";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const channelId = searchParams.get("channelId");
-  const maxResults = parseInt(searchParams.get("maxResults") || "10", 10);
+  const maxParam = searchParams.get("maxResults");
+  const maxResults = Math.min(maxParam ? parseInt(maxParam, 10) : randomCount(), 12);
 
   if (!channelId) {
     return NextResponse.json(
