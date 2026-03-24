@@ -68,7 +68,7 @@ function FeedContent() {
       } else if (tab.startsWith("channel:")) {
         const channelId = tab.slice("channel:".length);
         const res = await fetch(
-          `/api/videos/channel?channelId=${encodeURIComponent(channelId)}&maxResults=20`,
+          `/api/videos/channel?channelId=${encodeURIComponent(channelId)}`,
           { cache: 'no-store' }
         );
         if (!res.ok) {
@@ -78,7 +78,7 @@ function FeedContent() {
         setVideos(await res.json());
       } else {
         const res = await fetch(
-          `/api/videos/filtered?category=${encodeURIComponent(tab)}&count=20`,
+          `/api/videos/filtered?category=${encodeURIComponent(tab)}`,
           { cache: 'no-store' }
         );
         if (!res.ok) {

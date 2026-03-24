@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import { searchVideos } from "@/lib/youtube";
 import { Video } from "@/types/video";
+import { randomCount } from "@/lib/random";
 
-const DEFAULT_COUNT = 8;
-const MAX_COUNT = 25;
+const MAX_COUNT = 12;
 const MAX_ITERATIONS = 3;
 const VIDEOS_PER_PAGE = 25;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
+  const countParam = searchParams.get("count");
   const targetCount = Math.min(
-    Math.max(1, Number(searchParams.get("count")) || DEFAULT_COUNT),
+    Math.max(1, countParam ? Number(countParam) : randomCount()),
     MAX_COUNT
   );
 
