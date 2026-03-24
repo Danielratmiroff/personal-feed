@@ -8,6 +8,7 @@ import CategoryTabs from "@/components/CategoryTabs";
 import VideoGrid from "@/components/VideoGrid";
 import SkeletonGrid from "@/components/SkeletonGrid";
 import ErrorMessage from "@/components/ErrorMessage";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // Suspense boundary required because useSearchParams() triggers client-side bailout in Next.js App Router
 export default function FeedPage() {
@@ -118,7 +119,10 @@ function FeedContent() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Video Feed</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Video Feed</h1>
+        <ThemeToggle />
+      </div>
       <CategoryTabs
         categories={interests}
         channels={channels}

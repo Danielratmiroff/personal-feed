@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Video } from "@/types/video";
 import VideoDetail from "@/components/VideoDetail";
 import ErrorMessage from "@/components/ErrorMessage";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // Suspense boundary required because useSearchParams() triggers client-side bailout in Next.js App Router
 export default function VideoDetailPage() {
@@ -13,9 +14,9 @@ export default function VideoDetailPage() {
     <Suspense fallback={
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="animate-pulse">
-          <div className="aspect-video bg-gray-200 rounded-lg mb-4" />
-          <div className="bg-gray-200 h-6 rounded w-1/2 mb-2" />
-          <div className="bg-gray-200 h-4 rounded w-1/4" />
+          <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg mb-4" />
+          <div className="bg-gray-200 dark:bg-gray-700 h-6 rounded w-1/2 mb-2" />
+          <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-1/4" />
         </div>
       </main>
     }>
@@ -53,18 +54,21 @@ function VideoDetailContent() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
-      <Link
-        href={backHref}
-        className="text-gray-500 hover:text-gray-900 text-sm mb-6 inline-block transition-colors"
-      >
-        &larr; Back to feed
-      </Link>
+      <div className="flex items-center justify-between mb-6">
+        <Link
+          href={backHref}
+          className="text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 text-sm inline-block transition-colors"
+        >
+          &larr; Back to feed
+        </Link>
+        <ThemeToggle />
+      </div>
 
       {loading && (
         <div className="animate-pulse">
-          <div className="aspect-video bg-gray-200 rounded-lg mb-4" />
-          <div className="bg-gray-200 h-6 rounded w-1/2 mb-2" />
-          <div className="bg-gray-200 h-4 rounded w-1/4" />
+          <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg mb-4" />
+          <div className="bg-gray-200 dark:bg-gray-700 h-6 rounded w-1/2 mb-2" />
+          <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded w-1/4" />
         </div>
       )}
 
