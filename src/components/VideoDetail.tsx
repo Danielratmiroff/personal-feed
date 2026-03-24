@@ -23,15 +23,15 @@ export default function VideoDetail({ video }: { video: Video }) {
         </div>
       </div>
       <div className="lg:w-96">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
           {video.title}
         </h1>
-        <p className="text-gray-600 font-medium">{video.channelName}</p>
-        <p className="text-gray-400 text-sm mt-1">
+        <p className="text-gray-600 dark:text-gray-400 font-medium">{video.channelName}</p>
+        <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
           {formatDate(video.publishedAt)}
         </p>
-        <div className="mt-6 border-t pt-4">
-          <p className="text-gray-700 whitespace-pre-line text-sm leading-relaxed">
+        <div className="mt-6 border-t dark:border-gray-700 pt-4">
+          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line text-sm leading-relaxed">
             {video.description}
           </p>
         </div>

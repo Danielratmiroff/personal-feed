@@ -28,8 +28,8 @@ export default function CategoryTabs({
           onClick={() => onSelect(tab)}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
             activeTab === tab
-              ? "bg-gray-900 text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           }`}
         >
           {tab}
@@ -37,7 +37,7 @@ export default function CategoryTabs({
       ))}
       {channels.length > 0 && (
         <>
-          <span className="text-gray-300 mx-1">|</span>
+          <span className="text-gray-300 dark:text-gray-600 mx-1">|</span>
           {channels.map((channel) => {
             const tabValue = `channel:${channel.channelId}`;
             return (
@@ -46,8 +46,8 @@ export default function CategoryTabs({
                 onClick={() => onSelect(tabValue)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeTab === tabValue
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
               >
                 {channel.name}

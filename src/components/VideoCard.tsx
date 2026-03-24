@@ -31,7 +31,7 @@ export default function VideoCard({
   return (
     <Link
       href={`/video/${video.id}${tabParam}`}
-      className="group block rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+      className="group block rounded-lg overflow-hidden hover:shadow-lg dark:hover:shadow-gray-900 transition-shadow"
     >
       <div className="aspect-video relative overflow-hidden">
         <img
@@ -41,11 +41,11 @@ export default function VideoCard({
         />
       </div>
       <div className="p-3">
-        <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 text-sm">
           {video.title}
         </h3>
-        <p className="text-gray-500 text-xs mt-1">{video.channelName}</p>
-        <p className="text-gray-400 text-xs mt-0.5">
+        <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">{video.channelName}</p>
+        <p className="text-gray-400 dark:text-gray-500 text-xs mt-0.5">
           {timeAgo(video.publishedAt)}
         </p>
       </div>
