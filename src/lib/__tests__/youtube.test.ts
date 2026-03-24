@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { searchVideos, getVideoById } from "../youtube";
+import { searchVideos, getVideoById, getChannelVideos } from "../youtube";
 
 // Mock global fetch
 const mockFetch = vi.fn();
@@ -127,5 +127,75 @@ describe("getVideoById", () => {
     });
 
     await expect(getVideoById("nonexistent")).rejects.toThrow("Video not found");
+  });
+});
+
+describe("getChannelVideos", () => {
+  it("calls YouTube search API with channelId and order=date", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        items: [
+          {
+            id: { videoId: "vid1" },
+            snippet: {
+              title: "Channel Video",
+              thumbnails: { medium: { url: "https://img.youtube.com/vi/vid1/mqdefault.jpg" } },
+              channelTitle: "My Channel",
+              publishedAt: "2026-03-15T10:00:00Z",
+              description: "A channel video",
+            },
+          },
+        ],
+        nextPageToken: "TOKEN123",
+      }),
+    });
+
+    const result = await getChannelVideos("UC_CHANNEL_ID", 5);
+
+    expect(mockFetch).toHaveBeenCalledOnce();
+    const url = new URL(mockFetch.mock.calls[0][0]);
+    expect(url.origin + url.pathname).toBe(
+      "https://www.googleapis.com/youtube/v3/search"
+    );
+    expect(url.searchParams.get("channelId")).toBe("UC_CHANNEL_ID");
+    expect(url.searchParams.get("type")).toBe("video");
+    expect(url.searchParams.get("order")).toBe("date");
+    expect(url.searchParams.get("maxResults")).toBe("5");
+    expect(url.searchParams.get("key")).toBe("test-api-key");
+
+    expect(result).toEqual({
+      videos: [
+        {
+          id: "vid1",
+          title: "Channel Video",
+          thumbnail: "https://img.youtube.com/vi/vid1/mqdefault.jpg",
+          channelName: "My Channel",
+          publishedAt: "2026-03-15T10:00:00Z",
+          description: "A channel video",
+        },
+      ],
+      nextPageToken: "TOKEN123",
+    });
+  });
+
+  it("throws when API key is missing", async () => {
+    vi.stubEnv("YOUTUBE_API_KEY", "");
+
+    await expect(getChannelVideos("UC_CHANNEL_ID")).rejects.toThrow(
+      "YouTube API key not configured"
+    );
+  });
+
+  it("throws with message when YouTube API returns error", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 403,
+      json: async () => ({
+        error: { message: "quotaExceeded" },
+      }),
+    });
+
+    await expect(getChannelVideos("UC_CHANNEL_ID")).rejects.toThrow("quotaExceeded");
   });
 });

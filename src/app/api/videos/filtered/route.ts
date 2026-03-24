@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { searchVideos } from "@/lib/youtube";
-import { filterVideosWithAgent } from "@/lib/agent";
-import { userProfile } from "@/config/interests";
 import { Video } from "@/types/video";
 
 const DEFAULT_COUNT = 8;
@@ -38,13 +36,7 @@ export async function GET(request: Request) {
 
       if (videos.length === 0) break;
 
-      const filtered = await filterVideosWithAgent(
-        videos,
-        userProfile.interests,
-        userProfile.description
-      );
-
-      for (const video of filtered) {
+      for (const video of videos) {
         if (!seenIds.has(video.id)) {
           seenIds.add(video.id);
           collected.push(video);

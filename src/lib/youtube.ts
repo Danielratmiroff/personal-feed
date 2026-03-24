@@ -86,6 +86,33 @@ export async function searchVideos(
   };
 }
 
+export async function getChannelVideos(
+  channelId: string,
+  maxResults: number = 10
+): Promise<{ videos: Video[]; nextPageToken?: string }> {
+  const key = getApiKey();
+  const params = new URLSearchParams({
+    channelId,
+    type: "video",
+    part: "snippet",
+    order: "date",
+    maxResults: String(maxResults),
+    key,
+  });
+
+  const res = await fetch(`${YOUTUBE_API_BASE}/search?${params}`);
+  if (!res.ok) {
+    const body = await res.json();
+    throw new Error(body.error?.message || "YouTube API error");
+  }
+
+  const data = await res.json();
+  return {
+    videos: (data.items || []).map(mapSearchItem),
+    nextPageToken: data.nextPageToken,
+  };
+}
+
 export async function getVideoById(id: string): Promise<Video> {
   const key = getApiKey();
   const params = new URLSearchParams({
