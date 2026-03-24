@@ -1,13 +1,13 @@
 export const interests = ["AI Engineering", "Technology", "Science", "AI"];
 
-export const userProfile = {
-  interests: [
-    "AI",
-    "AI Engineering",
-    "Workshops",
-    "Learning",
-    "Building new AI skills",
-  ],
-  description:
-    "Someone passionate about AI, AI engineering, hands-on workshops, continuous learning, and building new AI skills",
-};
+export interface ChannelConfig {
+  name: string;
+  channelId: string;
+}
+
+export const channels: ChannelConfig[] = [
+  { name: "3Blue1Brown", channelId: "UCYO_jab_esuFRV4b17AJtAw" },
+  { name: "Fireship", channelId: "UCsBjURrPoezykLs9EqgamOA" },
+  { name: "Two Minute Papers", channelId: "UCbfYPyITQ-7l4upoX8nvctg" },
+  { name: "Yannic Kilcher", channelId: "UCZHmQk67mSJgfCCTn7xBfew" },
+];

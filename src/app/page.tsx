@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Video } from "@/types/video";
-import { interests } from "@/config/interests";
+import { interests, channels } from "@/config/interests";
 import CategoryTabs from "@/components/CategoryTabs";
 import VideoGrid from "@/components/VideoGrid";
 import SkeletonGrid from "@/components/SkeletonGrid";
@@ -32,16 +32,23 @@ function FeedContent() {
 
     try {
       if (tab === "All") {
-        const results = await Promise.all(
-          interests.map((cat) =>
-            fetch(`/api/videos/filtered?category=${encodeURIComponent(cat)}`, { cache: 'no-store' }).then(
-              (res) => {
-                if (!res.ok) throw res;
-                return res.json();
-              }
-            )
+        const categoryFetches = interests.map((cat) =>
+          fetch(`/api/videos/filtered?category=${encodeURIComponent(cat)}`, { cache: 'no-store' }).then(
+            (res) => {
+              if (!res.ok) throw res;
+              return res.json();
+            }
           )
         );
+        const channelFetches = channels.map((ch) =>
+          fetch(`/api/videos/channel?channelId=${encodeURIComponent(ch.channelId)}`, { cache: 'no-store' }).then(
+            (res) => {
+              if (!res.ok) throw res;
+              return res.json();
+            }
+          )
+        );
+        const results = await Promise.all([...categoryFetches, ...channelFetches]);
         const merged = results
           .flat()
           .sort(
@@ -57,6 +64,17 @@ function FeedContent() {
           return true;
         });
         setVideos(deduped);
+      } else if (tab.startsWith("channel:")) {
+        const channelId = tab.slice("channel:".length);
+        const res = await fetch(
+          `/api/videos/channel?channelId=${encodeURIComponent(channelId)}&maxResults=20`,
+          { cache: 'no-store' }
+        );
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to fetch videos");
+        }
+        setVideos(await res.json());
       } else {
         const res = await fetch(
           `/api/videos/filtered?category=${encodeURIComponent(tab)}&count=20`,
@@ -103,6 +121,7 @@ function FeedContent() {
       <h1 className="text-3xl font-bold mb-6">Video Feed</h1>
       <CategoryTabs
         categories={interests}
+        channels={channels}
         activeTab={activeTab}
         onSelect={handleTabSelect}
       />
