@@ -56,9 +56,21 @@ export const blogSources: BlogSourceConfig[] = [
     feedUrl: "https://api-docs.deepseek.com/news/rss",
   },
   {
+    name: "OpenAI News",
+    slug: "openai-news",
+    type: "rss",
+    feedUrl: "https://openai.com/news/rss.xml",
+  },
+  {
     name: "Google AI",
     slug: "google-ai",
     type: "rss",
     feedUrl: "https://blog.google/technology/ai/rss/",
+  },
+  {
+    name: "Google Research",
+    slug: "google-research",
+    type: "rss",
+    feedUrl: "https://research.google/blog/rss/",
   },
 ];

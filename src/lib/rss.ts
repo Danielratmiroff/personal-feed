@@ -1,7 +1,13 @@
 import Parser from "rss-parser";
 import { ArticleItem } from "@/types/feed";
 
-const parser = new Parser();
+const parser = new Parser({
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (compatible; PersonalFeed/1.0; +https://github.com/danielratmiroff/personal-feed)",
+    Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+  },
+});
 
 export async function fetchRSSArticles(
   feedUrl: string,
