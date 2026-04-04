@@ -36,10 +36,18 @@ export interface BlogSourceConfig {
 export const blogSources: BlogSourceConfig[] = [
   { name: "Hacker News", slug: "hackernews", type: "hackernews" },
   {
-    name: "Anthropic",
-    slug: "anthropic",
+    name: "Anthropic Engineering",
+    slug: "anthropic-engineering",
     type: "rss",
-    feedUrl: "https://www.anthropic.com/rss",
+    feedUrl:
+      "https://raw.githubusercontent.com/taobojlen/anthropic-rss-feed/main/anthropic_engineering_rss.xml",
+  },
+  {
+    name: "Anthropic News",
+    slug: "anthropic-news",
+    type: "rss",
+    feedUrl:
+      "https://raw.githubusercontent.com/taobojlen/anthropic-rss-feed/main/anthropic_news_rss.xml",
   },
   {
     name: "DeepSeek",
