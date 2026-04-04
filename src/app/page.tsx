@@ -97,7 +97,12 @@ function FeedContent() {
           const data = await res.json();
           throw new Error(data.error || "Failed to fetch articles");
         }
-        setItems(await res.json());
+        const articles: FeedItem[] = await res.json();
+        setItems(
+          articles.sort(
+            (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+          )
+        );
       } else if (tab.startsWith("channel:")) {
         const channelId = tab.slice("channel:".length);
         const res = await fetch(
