@@ -61,4 +61,22 @@ export const blogSources: BlogSourceConfig[] = [
     type: "rss",
     feedUrl: "https://blog.google/technology/ai/rss/",
   },
+  {
+    name: "HuggingFace Papers",
+    slug: "huggingface-papers",
+    type: "rss",
+    feedUrl: "https://huggingface.co/papers/rss",
+  },
+  {
+    name: "Papers With Code",
+    slug: "papers-with-code",
+    type: "rss",
+    feedUrl: "https://paperswithcode.com/latest/rss",
+  },
+  {
+    name: "arXiv AI",
+    slug: "arxiv-ai",
+    type: "rss",
+    feedUrl: "https://rss.arxiv.org/rss/cs.AI",
+  },
 ];
