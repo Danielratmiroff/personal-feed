@@ -68,10 +68,4 @@ export const blogSources: BlogSourceConfig[] = [
     feedUrl:
       "https://raw.githubusercontent.com/exfly/huggingface-daily-papers/main/feed.xml",
   },
-  {
-    name: "Papers With Code",
-    slug: "papers-with-code",
-    type: "rss",
-    feedUrl: "https://paperswithcode.com/latest/rss",
-  },
 ];
