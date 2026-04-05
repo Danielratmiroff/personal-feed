@@ -66,6 +66,6 @@ export const blogSources: BlogSourceConfig[] = [
     slug: "huggingface-papers",
     type: "rss",
     feedUrl:
-      "https://raw.githubusercontent.com/exfly/huggingface-daily-papers/main/feed.xml",
+      "https://raw.githubusercontent.com/huangboming/huggingface-daily-paper-feed/refs/heads/main/feed.xml",
   },
 ];
