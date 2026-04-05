@@ -65,13 +65,14 @@ export const blogSources: BlogSourceConfig[] = [
     name: "HuggingFace Papers",
     slug: "huggingface-papers",
     type: "rss",
-    feedUrl: "https://huggingface.co/papers/rss",
+    feedUrl:
+      "https://raw.githubusercontent.com/huangboming/huggingface-daily-paper-feed/refs/heads/main/feed.xml",
   },
   {
-    name: "Papers With Code",
-    slug: "papers-with-code",
+    name: "Microsoft Research",
+    slug: "microsoft-research",
     type: "rss",
-    feedUrl: "https://paperswithcode.com/latest/rss",
+    feedUrl: "https://www.microsoft.com/en-us/research/feed/",
   },
   {
     name: "arXiv AI",

@@ -1,7 +1,11 @@
 import Parser from "rss-parser";
 import { ArticleItem } from "@/types/feed";
 
-const parser = new Parser();
+const parser = new Parser({
+  headers: {
+    "User-Agent": "personal-feed/1.0 (RSS Reader)",
+  },
+});
 
 export async function fetchRSSArticles(
   feedUrl: string,
