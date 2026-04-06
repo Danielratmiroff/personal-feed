@@ -15,6 +15,7 @@ export const channels: ChannelConfig[] = [
   { name: "Dwarkesh Patel", channelId: "UCXl4i9dYBrFOabk0xGmbkRA" },
   { name: "Machine Learning Street Talk", channelId: "UCMLtBahI5DMrt0NPvDSoIRQ" },
   // AI Engineering & News
+  { name: "AI Engineer", channelId: "@aiDotEngineer" },
   { name: "AI Explained", channelId: "UCNJ1Ymd5yFuUPtn21xtRbbw" },
   { name: "Andrej Karpathy", channelId: "UCXUPKJO5MZQN11PqgIvyuvQ" },
   { name: "Matt Wolfe", channelId: "UChpleBmo18P08aKCIgti38g" },
