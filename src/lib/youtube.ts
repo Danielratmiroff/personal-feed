@@ -87,11 +87,38 @@ export async function searchVideos(
   };
 }
 
+async function resolveChannelHandle(handle: string): Promise<string> {
+  const key = getApiKey();
+  const params = new URLSearchParams({
+    part: "id",
+    forHandle: handle,
+    key,
+  });
+
+  const res = await fetch(`${YOUTUBE_API_BASE}/channels?${params}`);
+  if (!res.ok) {
+    const body = await res.json();
+    throw new Error(body.error?.message || "YouTube API error");
+  }
+
+  const data = await res.json();
+  if (!data.items || data.items.length === 0) {
+    throw new Error(`YouTube channel not found for handle: ${handle}`);
+  }
+
+  return data.items[0].id as string;
+}
+
 export async function getChannelVideos(
   channelId: string,
   maxResults: number = 10
 ): Promise<{ videos: Video[]; nextPageToken?: string }> {
   const key = getApiKey();
+
+  if (channelId.startsWith("@")) {
+    channelId = await resolveChannelHandle(channelId);
+  }
+
   const params = new URLSearchParams({
     channelId,
     type: "video",
